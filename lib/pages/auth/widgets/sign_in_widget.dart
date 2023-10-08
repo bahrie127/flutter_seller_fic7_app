@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_seller_app/pages/dashboard/seller_dashboard_page.dart';
 
 
 import '../../../bloc/login/login_bloc.dart';
 import '../../../data/datasources/auth_local_datasource.dart';
+import '../../../data/datasources/auth_remote_datasource.dart';
+import '../../../data/datasources/firebase_messaging_remote_datasource.dart';
 import '../../../data/models/request/login_request_model.dart';
 import '../../../utils/color_resources.dart';
 import '../../../utils/custom_themes.dart';
@@ -133,10 +136,11 @@ class SignInWidgetState extends State<SignInWidget> {
                     orElse: () {},
                     loaded: (data) async {
                       await AuthLocalDatasource().saveAuthData(data);
-                      // Navigator.pushAndRemoveUntil(context,
-                      //     MaterialPageRoute(builder: (context) {
-                      //   return DashboardPage();
-                      // }), (route) => false);
+                      await FirebaseMessagingRemoteDatasource().initNotification();
+                      Navigator.pushAndRemoveUntil(context,
+                          MaterialPageRoute(builder: (context) {
+                        return SellerDashboardPage();
+                      }), (route) => false);
                     },
                     error: (message) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

@@ -66,4 +66,26 @@ class AuthRemoteDatasource {
       return const Left('Server error');
     }
   }
+
+  //update fcm token
+  Future<Either<String, String>> updateFcmToken(String fcmToken) async {
+    final token = await AuthLocalDatasource().getToken();
+    final headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final body = jsonEncode({'fcm_token': fcmToken});
+    final response = await http.post(
+      Uri.parse('${GlobalVariables.baseUrl}/api/fcm-token'),
+      headers: headers,
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      return const Right('update fcm token success');
+    } else {
+      return const Left('Server error');
+    }
+  }
 }
